@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Brands</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th colspan="2">
+      <%= form_tag(brands_path, method: :get) do %>
+        <%= text_field_tag(:search) %>
+        <%= select_tag(:option, options_for_select([["name"], ["amount_product", "amount"], ["status"]])) %>
+        <%= submit_tag "search" %>
+      <% end %>
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @brands.each do |brand| %>
+      <tr>
+        <td><%= brand.name %></td>
+        <td style="text-align:center"><%= brand.amount_product %></td>
+        <td><%= brand.status %></td>
+        <td><%= link_to 'Edit', edit_brand_path(brand) %></td>
+        <td>
+          <% if brand.status != "Closed" %>
+            <%= link_to 'Close', close_brand_path(brand), data: { confirm: 'Are you sure to close this brand ?' } %>
+          <% else %>
+            <%= link_to 'Re-open', reopen_brand_path(brand), data: { confirm: 'Are you want to re-open this brand ?' } %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<%= paginate @brands %>
+<br>
+
+<%= link_to 'New Brand', new_brand_path %>
