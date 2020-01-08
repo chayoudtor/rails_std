@@ -10,23 +10,37 @@
       </ul>
     </div>
   <% end %>
+  
+<table class="table table-defaule bg-light rounded">
+  <tr class="field">
+    <td><%= form.label :product %></td>
+    <td><%= form.text_field :product, readonly: :true, class: "form-control" %></td>
+  </tr>
 
-  <div class="field">
-    <%= form.label :product %>
-    <%= form.text_field :product, readonly: :true %>
-  </div>
+  <tr class="field">
+    <td><%= form.label :brand %></td>
+    <td><%= form.text_field :brand, readonly: :true, class: "form-control" %></td>
+  </tr>
 
-  <div class="field">
-    <%= form.label :brand %>
-    <%= form.text_field :brand, readonly: :true %>
-  </div>
+  <tr class="field">
+    <td><%= form.label :amount %></td>
+    <td><%= form.number_field :amount, min: 1, class: "form-control" %></td>
+  </tr>
 
-  <div class="field">
-    <%= form.label :amount %>
-    <%= form.number_field :amount, min: 1 %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+  <tr class="actions">
+    <td colspan="2">
+      <span class="d-flex justify-content-between">
+        <span>
+          <% if params[:action] == "edit" %>
+            <%= link_to 'Details Page', @order, class: "btn btn-light" %> |
+            <%= link_to 'Back', orders_path, class: "btn btn-light" %>
+          <% else %>
+            <%= link_to 'Back', products_path, class: "btn btn-light" %>
+          <% end %>
+        </span>
+        <%= form.submit class: "btn btn-primary" %>
+      </span>
+    </td>
+  </tr>
+</table>
 <% end %>

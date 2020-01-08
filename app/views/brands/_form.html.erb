@@ -11,17 +11,29 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
+<table class="table table-defaule bg-light rounded">
+  <tr class="field">
+    <td><%= form.label :name %></td>
+    <td><%= form.text_field :name, class: "form-control" %></td>
+  </tr>
 
-  <div class="field">
-    <%= form.label :status %>
-    <%= form.select(:status, options_for_select([["Ongoing"], ["Pending"]])) %>
-  </div>
+  <tr class="field">
+    <td><%= form.label :status %></td>
+    <td><%= form.select(:status, options_for_select([["Ongoing"], ["Pending"]]), {}, {:class => "form-control"}) %></td>
+  </tr>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+  <tr class="actions">
+    <td colspan="2">
+      <span class="action d-flex justify-content-between">
+        <span>
+          <% if params[:action] == "edit" %>
+            <%= link_to 'Details Page', @brand, class: "btn btn-white" %> |
+          <% end %>
+            <%= link_to 'Back', brands_path, class: "btn btn-white" %>
+        </span>
+        <%= form.submit class: "btn btn-primary" %>
+      </span>  
+    </td>
+  </tr>
+</table>
 <% end %>

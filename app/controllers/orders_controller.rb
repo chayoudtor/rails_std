@@ -4,8 +4,8 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    if params[:search]
-      @orders = Order.all.where("#{params[:option]} LIKE ?", "%#{params[:search]}%").order(brand: :asc).page(params[:page])
+    if params[:search] && params[:search] != ""
+      @orders = Order.all.search(params[:search]).order(brand: :asc).page(params[:page])
     else
       @orders = Order.all.page(params[:page])
     end

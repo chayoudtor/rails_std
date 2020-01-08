@@ -1,19 +1,32 @@
-<p id="notice"><%= notice %></p>
+<h1>Product Details</h1>
+<table class="table table-striped bg-light mt-3">
+  <% if notice %>
+  <tr id="notice">
+      <td colspan="2" ><%= notice %></td>
+  </tr>
+  <% end %>
 
-<p>
-  <strong>Name:</strong>
-  <%= @product.name %>
-</p>
+  <tr>
+    <td><strong>Product:</strong></td>
+    <td><%= @product.name %></td>
+  </tr>
 
-<p>
-  <strong>Brand:</strong>
-  <%= @product.brand %>
-</p>
+  <tr>
+    <td><strong>Brand:</strong></td>
+    <td><%= @product.brand %></td>
+  </tr>
 
-<p>
-  <strong>Status:</strong>
-  <%= @product.status %>
-</p>
+  <tr>
+    <td><strong>Amount:</strong></td>
+    <td><%= @product.status %></td>
+  </tr>
 
-<%= link_to 'Edit', edit_product_path(@product) %> |
-<%= link_to 'Back', products_path %>
+  <tr>
+    <td colspan="2">
+    <span class="d-flex justify-content-between">
+      <%= link_to 'Go to Edit', edit_product_path(@product), class: "btn btn-primary" %>
+      <%= link_to 'Back', products_path, class: "btn btn-white" %>
+    </span>
+    </td>
+  </tr>
+</table>

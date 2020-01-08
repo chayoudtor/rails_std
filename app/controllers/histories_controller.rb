@@ -5,7 +5,7 @@ class HistoriesController < ApplicationController
   # GET /histories.json
   def index
     if params[:search]
-      @histories = History.all.where("#{params[:option]} LIKE ? ", "%#{params[:search]}%").order(created_at: :desc).page(params[:page])
+      @histories = History.all.search(params[:search]).order(created_at: :desc).page(params[:page])
     else
       @histories = History.all.order(created_at: :desc).page(params[:page])
     end

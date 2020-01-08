@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
   # GET /products.json
   def index
     if params[:search]
-      @products = Product.order(status: :asc, brand: :asc).where("#{params[:option]} LIKE ? ", "%#{params[:search]}%").page(params[:page])
+      @products = Product.search(params[:search]).order(status: :asc, brand: :asc).page(params[:page])
     else
       @products = Product.all.order(status: :asc, brand: :asc).page(params[:page])
     end
