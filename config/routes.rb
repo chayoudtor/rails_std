@@ -8,5 +8,7 @@ Rails.application.routes.draw do
   get '/brands/:id/reopen', to: 'brands#reopen', as: 'reopen_brand'
 
   get '/orders/:id/new', to: 'orders#new', as: 'new_order'
+
+  get '/other/clear', to: 'histories#clear', as: 'clear_history'
   root "orders#index"
 end

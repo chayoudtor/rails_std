@@ -1,13 +1,14 @@
 class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :edit, :update, :destroy]
+  helper_method :sort_column, :sort_direction
 
   # GET /orders
   # GET /orders.json
   def index
-    if params[:search]
-      @orders = Order.all.where("#{params[:option]} LIKE ?", "%#{params[:search]}%").order(brand: :asc).page(params[:page])
+    if params[:search] && params[:search] != ""
+      @orders = Order.all.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
     else
-      @orders = Order.all.page(params[:page])
+      @orders = Order.all.order(sort_column + " " + sort_direction).page(params[:page])
     end
   end
 
@@ -92,5 +93,13 @@ class OrdersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
       params.require(:order).permit(:product, :brand, :amount)
+    end
+
+    def sort_column
+      Order.column_names.include?(params[:sort]) ? params[:sort] : "product"
+    end
+
+    def sort_direction
+      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
 end

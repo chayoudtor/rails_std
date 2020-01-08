@@ -1,18 +1,19 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Brands</h1>
+<span class="d-flex justify-content-between">
+  <h1>Brands</h1>
+  <%= link_to 'Create Brand', new_brand_path, class: "btn btn-info mb-3" %>
+</span>
 
-<table>
+<table class="table table-striped bg-light rounded">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Amount</th>
-      <th>Status</th>
+      <th><%= sortable "name" %></th>
+      <th><%= sortable "amount_product", "Amount" %></th>
+      <th><%= sortable "status"%></th>
       <th colspan="2">
       <%= form_tag(brands_path, method: :get) do %>
-        <%= text_field_tag(:search) %>
-        <%= select_tag(:option, options_for_select([["name"], ["amount_product", "amount"], ["status"]])) %>
-        <%= submit_tag "search" %>
+        <%= text_field_tag :search,"", class: "form-control", placeholder: "search" %>
       <% end %>
       </th>
     </tr>
@@ -22,14 +23,14 @@
     <% @brands.each do |brand| %>
       <tr>
         <td><%= brand.name %></td>
-        <td style="text-align:center"><%= brand.amount_product %></td>
+        <td><%= brand.amount_product %></td>
         <td><%= brand.status %></td>
-        <td><%= link_to 'Edit', edit_brand_path(brand) %></td>
+        <td><%= link_to 'Edit', edit_brand_path(brand), class: "btn btn-outline-dark btn-block" %></td>
         <td>
           <% if brand.status != "Closed" %>
-            <%= link_to 'Close', close_brand_path(brand), data: { confirm: 'Are you sure to close this brand ?' } %>
+            <%= link_to 'Close', close_brand_path(brand), data: { confirm: 'Are you sure to close this brand ?' }, class: "btn btn-outline-dark btn-block" %>
           <% else %>
-            <%= link_to 'Re-open', reopen_brand_path(brand), data: { confirm: 'Are you want to re-open this brand ?' } %>
+            <%= link_to 'Re-open', reopen_brand_path(brand), data: { confirm: 'Are you want to re-open this brand ?' }, class: "btn btn-outline-dark btn-block" %>
           <% end %>
         </td>
       </tr>
@@ -39,5 +40,3 @@
 <br>
 <%= paginate @brands %>
 <br>
-
-<%= link_to 'New Brand', new_brand_path %>

@@ -1,20 +1,21 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Histories</h1>
+<span class="d-flex justify-content-between">
+  <h1>Histories</h1>
+  <%= link_to 'Clear Histories', clear_history_path, class: "btn btn-danger mb-3" %>
+</span>
 
-<table>
+<table class="table table-striped bg-light rounded" >
   <thead>
     <tr>
-      <th>Date</th>
-      <th>Brand</th>
-      <th>Product</th>
-      <th>Amount</th>
-      <th>Order</th>
-      <th colspan="3">
-        <%= form_tag(histories_path, method: :get) do %>
-          <%= text_field_tag(:search) %>
-          <%= select_tag(:option, options_for_select([["brand"], ["product"], ["amount"], ["order code", "order_code"]])) %>
-          <%= submit_tag "search" %>
+      <th><%= sortable "created_at", "Date" %></th>
+      <th><%= sortable "brand" %></th>
+      <th><%= sortable "product" %></th>
+      <th><%= sortable "amount" %></th>
+      <th><%= sortable "order_code", "Order" %></th>
+      <th>
+        <%= form_tag(histories_path, method: :get, class: 'form-inline') do %>
+          <%= text_field_tag :search,"", class: "form-control", placeholder: "search" %>
         <% end %>
       </th>
     </tr>
@@ -23,13 +24,12 @@
   <tbody>
     <% @histories.each do |history| %>
       <tr>
-        <td><%= history.created_at %></td>
+        <td><%= history.created_at.strftime('%F ( %T )') %></td>
         <td><%= history.brand %></td>
         <td><%= history.product %></td>
         <td><%= history.amount %></td>
         <td><%= history.order_code %></td>
-        <td><%= link_to 'Show', history %></td>
-        <td><%= link_to 'Destroy', history, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', history, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-outline-dark btn-block" %></td>
       </tr>
     <% end %>
   </tbody>

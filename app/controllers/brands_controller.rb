@@ -1,13 +1,14 @@
 class BrandsController < ApplicationController
   before_action :set_brand, only: [:show, :edit, :update, :destroy]
+  helper_method :sort_column, :sort_direction
 
   # GET /brands
   # GET /brands.json
   def index
     if params[:search]
-      @brands = Brand.where("#{params[:option]} LIKE ?", "%#{params[:search]}%").order(name: :asc).page(params[:page])
+      @brands = Brand.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
     else
-      @brands = Brand.all.order(name: :asc).page(params[:page])
+      @brands = Brand.all.order(sort_column + " " + sort_direction).page(params[:page])
     end
   end
 
@@ -66,21 +67,25 @@ class BrandsController < ApplicationController
   # end
 
   def close
-    @brands = Brand.find(params[:id])
-    @products = Product.all.where(brand: @brands.name)
+    @brands   = Brand.find(params[:id])
+    @products = Product.where(brand: @brands.name)
+    @order    = Order.where(brand: @brands.name)
 
-    @brands.update({"status" => "Closed"})
-    @products.update({"status" => "Close by brand"})
+    @brands.update({"status"    => "Closed"})
+    @products.update({"status"  => "Close by brand"})
+    @order.update({"status"     => "Pending"})
     
     redirect_to brands_path
   end
 
   def reopen
-    @brands = Brand.find(params[:id])
-    @products = Product.all.where(brand: @brands.name)
+    @brands     = Brand.find(params[:id])
+    @products   = Product.all.where(brand: @brands.name)
+    @order      = Order.where(brand: @brands.name)
 
-    @brands.update({"status" => "Pending"})
-    @products.update({"status" => "Wating for confirmation"})
+    @brands.update({"status"    => "Pending"})
+    @products.update({"status"  => "Wating for confirmation"})
+    @order.update({"status"     => "Ordering"})
     
     redirect_to brands_path
   end
@@ -94,5 +99,13 @@ class BrandsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def brand_params
       params.require(:brand).permit(:name, :amount_product, :status)
+    end
+
+    def sort_column
+      Brand.column_names.include?(params[:sort]) ? params[:sort] : "name"
+    end
+
+    def sort_direction
+      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
 end

@@ -1,13 +1,14 @@
 class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
+  helper_method :sort_column, :sort_direction
 
   # GET /products
   # GET /products.json
   def index
     if params[:search]
-      @products = Product.order(status: :asc, brand: :asc).where("#{params[:option]} LIKE ? ", "%#{params[:search]}%").page(params[:page])
+      @products = Product.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
     else
-      @products = Product.all.order(status: :asc, brand: :asc).page(params[:page])
+      @products = Product.all.order(sort_column + " " + sort_direction).page(params[:page])
     end
   end
 
@@ -54,7 +55,13 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1.json
   def update
     respond_to do |format|
+      logger.debug "Params is : #{product_params[:status]}"
       if @product.update(product_params)
+        if product_params[:status] == "Out of stock"
+          Order.where(product: product_params[:name]).update({"status" => "Sold out"})
+        else 
+          Order.where(product: product_params[:name]).update({"status" => "Ordering"})
+        end
         format.html { redirect_to @product, notice: 'Product was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
       else
@@ -86,5 +93,13 @@ class ProductsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
       params.require(:product).permit(:name, :brand, :status)
+    end
+
+    def sort_column
+      Product.column_names.include?(params[:sort]) ? params[:sort] : "name"
+    end
+
+    def sort_direction
+      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
 end

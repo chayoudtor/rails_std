@@ -1,18 +1,19 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Products</h1>
+<span class="d-flex justify-content-between">
+  <h1>Products</h1>
+  <%= link_to 'Create Product', new_product_path, class: "btn btn-info mb-3" %>
+</span>
 
-<table>
+<table class="table table-striped bg-light rounded">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Brand</th>
-      <th>Status</th>
+      <th><%= sortable "name" %></th>
+      <th><%= sortable "brand" %></th>
+      <th><%= sortable "status" %></th>
       <th colspan="3">
         <%= form_tag(products_path, method: :get) do %>
-          <%= text_field_tag(:search) %>
-          <%= select_tag(:option, options_for_select([["name"], ["brand"], ["status"]])) %>
-          <%= submit_tag "search" %>
+          <%= text_field_tag :search,"", class: "form-control", placeholder: "search" %>
         <% end %>
       </th>
     </tr>
@@ -26,13 +27,13 @@
         <td><%= product.status %></td>
         <td>
           <% if product.status == "Available" %>
-            <%= link_to 'Order', new_order_path(product) %>
+            <%= link_to 'Order', new_order_path(product), class: "btn btn-outline-dark btn-block" %>
           <% else %>
-            <del>Order</del>
+            <span class="btn btn-outline-dark btn-block disabled">Order</span>
           <% end %>
         </td>
-        <td><%= link_to 'Edit', edit_product_path(product) %></td>
-        <td><%= link_to 'Remove', product, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Edit', edit_product_path(product), class: "btn btn-outline-dark btn-block" %></td>
+        <td><%= link_to 'Remove', product, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-outline-dark btn-block" %></td>
       </tr>
     <% end %>
   </tbody>
@@ -44,4 +45,3 @@
 
 <br>
 
-<%= link_to 'New Product', new_product_path %>
