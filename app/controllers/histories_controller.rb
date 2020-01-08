@@ -1,13 +1,14 @@
 class HistoriesController < ApplicationController
   before_action :set_history, only: [:show, :edit, :update, :destroy]
+  helper_method :sort_column, :sort_direction
 
   # GET /histories
   # GET /histories.json
   def index
     if params[:search]
-      @histories = History.all.search(params[:search]).order(created_at: :desc).page(params[:page])
+      @histories = History.all.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
     else
-      @histories = History.all.order(created_at: :desc).page(params[:page])
+      @histories = History.all.order(sort_column + " " + sort_direction).page(params[:page])
     end
   end
 
@@ -74,5 +75,13 @@ class HistoriesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def history_params
       params.require(:history).permit(:order_code, :brand, :product, :amount)
+    end
+
+    def sort_column
+      History.column_names.include?(params[:sort]) ? params[:sort] : "created_at"
+    end
+
+    def sort_direction
+      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
 end

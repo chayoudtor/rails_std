@@ -1,13 +1,14 @@
 class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
+  helper_method :sort_column, :sort_direction
 
   # GET /products
   # GET /products.json
   def index
     if params[:search]
-      @products = Product.search(params[:search]).order(status: :asc, brand: :asc).page(params[:page])
+      @products = Product.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
     else
-      @products = Product.all.order(status: :asc, brand: :asc).page(params[:page])
+      @products = Product.all.order(sort_column + " " + sort_direction).page(params[:page])
     end
   end
 
@@ -86,5 +87,13 @@ class ProductsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
       params.require(:product).permit(:name, :brand, :status)
+    end
+
+    def sort_column
+      Product.column_names.include?(params[:sort]) ? params[:sort] : "name"
+    end
+
+    def sort_direction
+      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
 end

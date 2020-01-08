@@ -1,13 +1,14 @@
 class BrandsController < ApplicationController
   before_action :set_brand, only: [:show, :edit, :update, :destroy]
+  helper_method :sort_column, :sort_direction
 
   # GET /brands
   # GET /brands.json
   def index
     if params[:search]
-      @brands = Brand.search(params[:search]).order(name: :asc).page(params[:page])
+      @brands = Brand.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
     else
-      @brands = Brand.all.order(name: :asc).page(params[:page])
+      @brands = Brand.all.order(sort_column + " " + sort_direction).page(params[:page])
     end
   end
 
@@ -94,5 +95,13 @@ class BrandsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def brand_params
       params.require(:brand).permit(:name, :amount_product, :status)
+    end
+
+    def sort_column
+      Brand.column_names.include?(params[:sort]) ? params[:sort] : "name"
+    end
+
+    def sort_direction
+      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
 end

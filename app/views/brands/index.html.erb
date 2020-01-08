@@ -8,9 +8,9 @@
 <table class="table table-striped bg-light rounded">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Amount</th>
-      <th>Status</th>
+      <th><%= sortable "name" %></th>
+      <th><%= sortable "amount_product", "Amount" %></th>
+      <th><%= sortable "status"%></th>
       <th colspan="2">
       <%= form_tag(brands_path, method: :get) do %>
         <%= text_field_tag :search,"", class: "form-control", placeholder: "search" %>

@@ -5,11 +5,11 @@
 <table class="table table-striped bg-light rounded" >
   <thead>
     <tr>
-      <th>Date</th>
-      <th>Brand</th>
-      <th>Product</th>
-      <th>Amount</th>
-      <th>Order</th>
+      <th><%= sortable "created_at", "Date" %></th>
+      <th><%= sortable "brand" %></th>
+      <th><%= sortable "product" %></th>
+      <th><%= sortable "amount" %></th>
+      <th><%= sortable "order_code", "Order" %></th>
       <th>
         <%= form_tag(histories_path, method: :get, class: 'form-inline') do %>
           <%= text_field_tag :search,"", class: "form-control", placeholder: "search" %>
@@ -21,7 +21,7 @@
   <tbody>
     <% @histories.each do |history| %>
       <tr>
-        <td><%= history.created_at %></td>
+        <td><%= history.created_at.strftime('%F ( %T )') %></td>
         <td><%= history.brand %></td>
         <td><%= history.product %></td>
         <td><%= history.amount %></td>
