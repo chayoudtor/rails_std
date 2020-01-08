@@ -55,7 +55,13 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1.json
   def update
     respond_to do |format|
+      logger.debug "Params is : #{product_params[:status]}"
       if @product.update(product_params)
+        if product_params[:status] == "Out of stock"
+          Order.where(product: product_params[:name]).update({"status" => "Sold out"})
+        else 
+          Order.where(product: product_params[:name]).update({"status" => "Ordering"})
+        end
         format.html { redirect_to @product, notice: 'Product was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
       else

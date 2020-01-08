@@ -67,21 +67,25 @@ class BrandsController < ApplicationController
   # end
 
   def close
-    @brands = Brand.find(params[:id])
-    @products = Product.all.where(brand: @brands.name)
+    @brands   = Brand.find(params[:id])
+    @products = Product.where(brand: @brands.name)
+    @order    = Order.where(brand: @brands.name)
 
-    @brands.update({"status" => "Closed"})
-    @products.update({"status" => "Close by brand"})
+    @brands.update({"status"    => "Closed"})
+    @products.update({"status"  => "Close by brand"})
+    @order.update({"status"     => "Pending"})
     
     redirect_to brands_path
   end
 
   def reopen
-    @brands = Brand.find(params[:id])
-    @products = Product.all.where(brand: @brands.name)
+    @brands     = Brand.find(params[:id])
+    @products   = Product.all.where(brand: @brands.name)
+    @order      = Order.where(brand: @brands.name)
 
-    @brands.update({"status" => "Pending"})
-    @products.update({"status" => "Wating for confirmation"})
+    @brands.update({"status"    => "Pending"})
+    @products.update({"status"  => "Wating for confirmation"})
+    @order.update({"status"     => "Ordering"})
     
     redirect_to brands_path
   end

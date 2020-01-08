@@ -66,6 +66,14 @@ class HistoriesController < ApplicationController
     end
   end
 
+  def clear
+    History.all.destroy_all
+    respond_to do |format|
+      format.html { redirect_to histories_path, notice: 'History was successfully clear.' }
+      format.json { head :no_content }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_history

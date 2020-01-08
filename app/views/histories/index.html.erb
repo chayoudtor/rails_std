@@ -1,6 +1,9 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Histories</h1>
+<span class="d-flex justify-content-between">
+  <h1>Histories</h1>
+  <%= link_to 'Clear Histories', clear_history_path, class: "btn btn-danger mb-3" %>
+</span>
 
 <table class="table table-striped bg-light rounded" >
   <thead>

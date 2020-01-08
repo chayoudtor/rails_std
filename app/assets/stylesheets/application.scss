@@ -1,8 +1,8 @@
 @import "bootstrap";
 
 body {
-    background-color: #444;
     color: #fff;
+    background-color: #444;
 }
 
 // table {
@@ -10,14 +10,14 @@ body {
 // }
 
 .pagination a, .pagination span.current, .pagination span.gap {
-    color: black;
     float: left;
+    color: black;
     padding: 0 14px;
     line-height: 38px;
+    border-left-width: 0;
     text-decoration: none;
     background-color: white;
     border: 1px solid #DDD;
-    border-left-width: 0;
 }
 
 .pagination {
@@ -47,4 +47,9 @@ body {
         float: none;
         border: none;
     }
+}
+
+#notice {
+    color: greenyellow;
+    margin: 1em 0em;
 }
