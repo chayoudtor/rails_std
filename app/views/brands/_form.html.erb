@@ -26,10 +26,10 @@
     <td colspan="2">
       <span class="action d-flex justify-content-between">
         <span>
+        <%= link_to 'Back', brands_path, class: "btn btn-white" %>
           <% if params[:action] == "edit" %>
-            <%= link_to 'Details Page', @brand, class: "btn btn-white" %> |
+          | <%= link_to 'Details Page', @brand, class: "btn btn-white" %>
           <% end %>
-            <%= link_to 'Back', brands_path, class: "btn btn-white" %>
         </span>
         <%= form.submit class: "btn btn-primary" %>
       </span>  
