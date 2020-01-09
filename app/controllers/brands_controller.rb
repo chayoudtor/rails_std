@@ -2,35 +2,30 @@ class BrandsController < ApplicationController
   before_action :set_brand, only: [:show, :edit, :update, :destroy]
   helper_method :sort_column, :sort_direction
 
-  # GET /brands
-  # GET /brands.json
+  # Action for index page
   def index
-    if params[:search]
-      @brands = Brand.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
-    else
-      @brands = Brand.all.order(sort_column + " " + sort_direction).page(params[:page])
-    end
+    @brands = index_page
   end
 
-  # GET /brands/1
-  # GET /brands/1.json
+  # Action for show page
   def show
   end
 
-  # GET /brands/new
+  # Action for create page
   def new
     @brand = Brand.new
   end
 
-  # GET /brands/1/edit
+  # Action for edit page
   def edit
   end
 
-  # POST /brands
-  # POST /brands.json
+  # Action for params that got from new action
   def create
+    # Set default amount_product whent created a new brand 
     @brand = Brand.new(brand_params.merge({"amount_product" => 0}))
 
+    # Respond to notice what have done after save action
     respond_to do |format|
       if @brand.save
         format.html { redirect_to @brand, notice: 'Brand was successfully created.' }
@@ -42,8 +37,7 @@ class BrandsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /brands/1
-  # PATCH/PUT /brands/1.json
+  # Action for params that got from edit action
   def update
     respond_to do |format|
       if @brand.update(brand_params)
@@ -56,16 +50,7 @@ class BrandsController < ApplicationController
     end
   end
 
-  # DELETE /brands/1
-  # DELETE /brands/1.json
-  # def destroy
-  #   @brand.destroy
-  #   respond_to do |format|
-  #     format.html { redirect_to brands_url, notice: 'Brand was successfully destroyed.' }
-  #     format.json { head :no_content }
-  #   end
-  # end
-
+  # Action to close each brand by change there status
   def close
     @brands   = Brand.find(params[:id])
     @products = Product.where(brand: @brands.name)
@@ -78,6 +63,7 @@ class BrandsController < ApplicationController
     redirect_to brands_path
   end
 
+  # Action to reopen each brand with set child of action
   def reopen
     @brands     = Brand.find(params[:id])
     @products   = Product.all.where(brand: @brands.name)
@@ -96,15 +82,28 @@ class BrandsController < ApplicationController
       @brand = Brand.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Set params to brand environment
     def brand_params
       params.require(:brand).permit(:name, :amount_product, :status)
     end
 
+    # Set action to index page 
+    def index_page
+
+      # For search action
+      if params[:search] && params[:search] != ""
+        Brand.index(sort_column, sort_direction, params[:page], params[:search])
+      else
+        Brand.index(sort_column, sort_direction, params[:page])
+      end
+    end
+
+    # Set and get default of column to sort
     def sort_column
       Brand.column_names.include?(params[:sort]) ? params[:sort] : "name"
     end
 
+    # Set a sort direction between asc and desc
     def sort_direction
       %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
