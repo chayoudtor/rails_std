@@ -2,24 +2,22 @@ class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
   helper_method :sort_column, :sort_direction
 
-  # GET /products
-  # GET /products.json
+  # Action for index page
   def index
-    if params[:search]
-      @products = Product.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
-    else
-      @products = Product.all.order(sort_column + " " + sort_direction).page(params[:page])
-    end
+    @products = index_page
   end
 
-  # GET /products/1
-  # GET /products/1.json
+  # Action for show page
   def show
   end
 
-  # GET /products/new
+  # Action to new page
   def new
+
+    # Select brand to set select option
     @brands = Brand.all.where(status: "Ongoing")
+    
+    # Check brand is exist or not 
     if @brands.count(:id) > 0
       @product = Product.new
     else
@@ -27,21 +25,26 @@ class ProductsController < ApplicationController
     end
   end
 
-  # GET /products/1/edit
+  # Action for edit
   def edit
   end
 
-  # POST /products
-  # POST /products.json
+  # Action for params that got from new action
   def create
+    
+    # Set default status for product
     @product = Product.new(product_params.merge({"status" => "Available"}))
 
+    # Select brand to set amount of product
     @brands = Brand.where(name: @product.brand).take
 
-    logger.debug "Here is value from brand query ; #{@brands.amount_product}"
+    # Respond to what have done to notice
     respond_to do |format|
       if @product.save
+
+        # Update number of product to brand
         @brands.update({"amount_product" => @brands.amount_product + 1})
+
         format.html { redirect_to @product, notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else
@@ -51,17 +54,19 @@ class ProductsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /products/1
-  # PATCH/PUT /products/1.json
+  # Action for params that got from edit action
   def update
     respond_to do |format|
-      logger.debug "Params is : #{product_params[:status]}"
       if @product.update(product_params)
+
+        # Check updated status of product to update order
         if product_params[:status] == "Out of stock"
           Order.where(product: product_params[:name]).update({"status" => "Sold out"})
         else 
           Order.where(product: product_params[:name]).update({"status" => "Ordering"})
         end
+
+        # Notice update status
         format.html { redirect_to @product, notice: 'Product was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
       else
@@ -71,13 +76,18 @@ class ProductsController < ApplicationController
     end
   end
 
-  # DELETE /products/1
-  # DELETE /products/1.json
+  # Action for destroy
   def destroy
+
+    # Select brand related this product
     @brands = Brand.where(name: @product.brand).take
+
     @product.destroy
 
+    # Update number of product to brand 
     @brands.update({"amount_product" => @brands.amount_product - 1})
+
+    # Respond what have done to notice
     respond_to do |format|
       format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
       format.json { head :no_content }
@@ -95,10 +105,23 @@ class ProductsController < ApplicationController
       params.require(:product).permit(:name, :brand, :status)
     end
 
-    def sort_column
-      Product.column_names.include?(params[:sort]) ? params[:sort] : "name"
+    # Set action to index page 
+    def index_page
+
+      # For search action 
+      if params[:search] && params[:search] != ""
+        Product.index(sort_column, sort_direction, params[:page], params[:search])
+      else
+        Product.index(sort_column, sort_direction, params[:page])
+      end
     end
 
+    # Set and get default of column to sort
+    def sort_column
+      Product.column_names.include?(params[:sort]) ? params[:sort] : "brand"
+    end
+
+    # Set a sort direction between asc and desc
     def sort_direction
       %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end

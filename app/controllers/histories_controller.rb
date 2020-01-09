@@ -2,35 +2,29 @@ class HistoriesController < ApplicationController
   before_action :set_history, only: [:show, :edit, :update, :destroy]
   helper_method :sort_column, :sort_direction
 
-  # GET /histories
-  # GET /histories.json
+  # Action for index page
   def index
-    if params[:search]
-      @histories = History.all.search(params[:search]).order(sort_column + " " + sort_direction).page(params[:page])
-    else
-      @histories = History.all.order(sort_column + " " + sort_direction).page(params[:page])
-    end
+    @histories = index_page
   end
 
-  # GET /histories/1
-  # GET /histories/1.json
+  # Action for show page
   def show
   end
 
-  # GET /histories/new
+  # Action for new page
   def new
     @history = History.new
   end
 
-  # GET /histories/1/edit
+  # Action for edit page 
   def edit
   end
 
-  # POST /histories
-  # POST /histories.json
+  # Action for params that got from new action
   def create
     @history = History.new(history_params)
 
+    # Respond to notice what have done after create
     respond_to do |format|
       if @history.save
         format.html { redirect_to @history, notice: 'History was successfully created.' }
@@ -42,9 +36,10 @@ class HistoriesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /histories/1
-  # PATCH/PUT /histories/1.json
+  # Action for params that got from edit action 
   def update
+
+    # Respond to notice what have done after edit
     respond_to do |format|
       if @history.update(history_params)
         format.html { redirect_to @history, notice: 'History was successfully updated.' }
@@ -56,18 +51,22 @@ class HistoriesController < ApplicationController
     end
   end
 
-  # DELETE /histories/1
-  # DELETE /histories/1.json
+  # Action for destroy
   def destroy
     @history.destroy
+
+    # Respond to notice what have done after destroy
     respond_to do |format|
       format.html { redirect_to histories_url, notice: 'History was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
+  # Action for clear all histories
   def clear
     History.all.destroy_all
+
+    # Respond to notic what have done after clear
     respond_to do |format|
       format.html { redirect_to histories_path, notice: 'History was successfully clear.' }
       format.json { head :no_content }
@@ -80,15 +79,28 @@ class HistoriesController < ApplicationController
       @history = History.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Set params to histories environment
     def history_params
       params.require(:history).permit(:order_code, :brand, :product, :amount)
     end
 
+    # Set action to index page 
+    def index_page
+
+      # For search action 
+      if params[:search] && params[:search] != ""
+        History.index(sort_column, sort_direction, params[:page], params[:search])
+      else
+        History.index(sort_column, sort_direction, params[:page])
+      end
+    end
+
+    # Set and get default of column to sort
     def sort_column
       History.column_names.include?(params[:sort]) ? params[:sort] : "created_at"
     end
 
+    # Set a sort direction between asc and desc
     def sort_direction
       %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
     end
